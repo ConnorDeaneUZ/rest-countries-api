@@ -18,7 +18,7 @@
         <country-card
           v-for="(card, index) in countries"
           :key="index"
-          :name="card.name.official"
+          :countryName="card.name.official"
           :population="card?.population"
           :region="card.region"
           :capital="card.capital"

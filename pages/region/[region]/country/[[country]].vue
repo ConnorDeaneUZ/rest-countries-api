@@ -36,6 +36,7 @@
     </div>
 
     <div
+      v-if="store.countryData[0]"
       class="
         country-info-container
         items-center
@@ -46,37 +47,75 @@
       "
     >
       <div class="flag-wrapper w-[500x] lg:w-[600px]">
-        <img src="https://flagcdn.com/tc.svg" alt="" />
+        <img
+          v-if="store.countryData[0].flags.svg"
+          :src="store?.countryData[0].flags?.svg"
+          alt=""
+        />
       </div>
 
       <div class="country-info">
-        <h2 class="text-4xl font-bold py-8">Belgium</h2>
+        <h2
+          v-if="store?.countryData[0].name?.official"
+          class="text-4xl font-bold py-8"
+        >
+          {{ store?.countryData[0].name?.official }}
+        </h2>
 
         <div class="bullet-points-wrapper w-full">
           <ul class="grid grid-cols-1 2xl:grid-cols-2 gap-4">
             <li class="font-bold">
-              Native Name: <span class="font-normal">Belgie</span>
+              Native Name:
+              <span class="font-normal">{{
+                store?.countryData[0]?.name?.nativeName?.eng?.official
+                  ? store?.countryData[0]?.name?.nativeName?.eng?.official
+                  : store?.countryData[0].name?.official
+              }}</span>
             </li>
             <li class="font-bold">
-              Population: <span class="font-normal">11319511</span>
+              Population:
+              <span class="font-normal">{{
+                store.countryData[0].population.toLocaleString()
+              }}</span>
             </li>
             <li class="font-bold">
-              Region: <span class="font-normal">Belgie</span>
+              Region:
+              <span class="font-normal">{{ store.countryData[0].region }}</span>
             </li>
             <li class="font-bold">
-              Sub Region: <span class="font-normal">Belgie</span>
+              Sub Region:
+              <span class="font-normal">{{
+                store.countryData[0].subregion
+              }}</span>
             </li>
             <li class="font-bold">
-              Capital: <span class="font-normal">Belgie</span>
+              Capital:
+              <span class="font-normal">{{
+                store.countryData[0].capital[0]
+              }}</span>
             </li>
             <li class="font-bold">
-              Top Level Domain: <span class="font-normal">Belgie</span>
+              Top Level Domain:
+              <span class="font-normal">{{ store.countryData[0].tld[0] }}</span>
             </li>
             <li class="font-bold">
-              Currencies: <span class="font-normal">Belgie</span>
+              Currencies:
+              <span
+                v-for="(currency, index) in store.countryData[0].currencies"
+                :key="index"
+                class="font-normal"
+                >{{ currency.name }} ({{ currency.symbol }})</span
+              >
             </li>
-            <li class="font-bold">
-              Languages: <span class="font-normal">Belgie</span>
+            <li v-if="store.countryData[0].languages" class="font-bold">
+              Languages:
+              <span
+                v-for="(lang, index) in store.countryData[0].languages"
+                :key="index"
+                class="font-normal"
+              >
+                {{ lang }}
+              </span>
             </li>
           </ul>
         </div>
@@ -84,10 +123,13 @@
         <div class="country-borders-wrapper xl:flex items-center py-16">
           <p class="font-bold mr-4">Border Countries:</p>
 
-          <div class="countries-container xl:flex">
+          <div
+            v-if="store.countryData[0].borders"
+            class="countries-container xl:flex"
+          >
             <div
               class="countries-wrapper"
-              v-for="(border, index) in borders"
+              v-for="(border, index) in store.countryData[0].borders"
               :key="index"
             >
               <div
@@ -103,25 +145,21 @@
                   xl:my-0
                 "
               >
-                <p>France</p>
+                <p>{{ border }}</p>
               </div>
             </div>
           </div>
+          <p v-else>No borders data available</p>
         </div>
       </div>
     </div>
   </section>
-
-  <!-- 
-
-  flag
-
-  country information.
- -->
 </template>
 
 <script setup>
 import { useRouter } from "vue-router";
+import { useStore } from "~/store/useStore.ts";
+const store = useStore();
 const router = useRouter();
 
 function pushHome() {

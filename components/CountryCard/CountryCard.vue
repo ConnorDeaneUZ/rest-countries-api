@@ -1,5 +1,8 @@
 <template>
-  <NuxtLink :to="`/region/${region}/country/${name.replace(/\\s+/g, '_')}`">
+  <NuxtLink
+    :to="`/region/${region}/country/${countryName.replace(/\\s+/g, '_')}`"
+    @click="fetchCountry()"
+  >
     <section class="min-w-[250px]">
       <div class="container shadow rounded-md overflow-hidden">
         <div
@@ -8,7 +11,9 @@
         ></div>
 
         <div class="info-container p-8 bg-white">
-          <h2 class="text-xl font-bold py-4">{{ name }}</h2>
+          <h2 v-if="countryName" class="text-xl font-bold py-4">
+            {{ countryName }}
+          </h2>
           <p class="text-sm py-1">
             Population:
             <span class="text-sm text-gray-500">{{
@@ -31,8 +36,11 @@
 </template>
 
 <script setup>
+import { useStore } from "~/store/useStore.ts";
+import { defineProps } from "vue";
+
 const props = defineProps({
-  name: {
+  countryName: {
     type: String,
   },
   population: {
@@ -48,4 +56,11 @@ const props = defineProps({
     type: String,
   },
 });
+
+const store = useStore();
+const { fetchCountrySingle } = store;
+
+function fetchCountry() {
+  fetchCountrySingle(props.countryName);
+}
 </script>
